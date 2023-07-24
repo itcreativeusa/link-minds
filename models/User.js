@@ -25,6 +25,14 @@ const userSchema = new Schema(
         ref: "user",
       },
     ],
+    linkedin: {
+      type: String, // Modify this based on your requirements
+      trim: true,
+    },
+    github: {
+      type: String, // Modify this based on your requirements
+      trim: true,
+    },
   },
   {
     toJSON: {

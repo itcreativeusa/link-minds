@@ -1,51 +1,61 @@
 const connection = require("../config/connection");
-const { Thought, User } = require("../models");
-const { getRandomName, getRandomAssignments } = require("./data");
+const { Thought, User, Reaction } = require("../models");
+const { getRandomName } = require("./data");
 
 connection.on("error", (err) => err);
 
 connection.once("open", async () => {
   console.log("connected");
 
-  // Drop existing thoughts
+  // Drop existing thoughts, users, and reactions
   await Thought.deleteMany({});
-
-  // Drop existing users
   await User.deleteMany({});
+  await Reaction.deleteMany({});
 
-  // Create empty array to hold the users
+  // Create empty array to hold the users and thoughts
   const users = [];
+  const thoughts = [];
 
   // Loop 20 times -- add users to the users array
   for (let i = 0; i < 20; i++) {
-    // Get some random assignment objects using a helper function that we imported from ./data
-    const assignments = getRandomAssignments(20);
-
     const fullName = getRandomName();
     const first = fullName.split(" ")[0];
     const last = fullName.split(" ")[1];
     const github = `${first}${Math.floor(Math.random() * (99 - 18 + 1) + 18)}`;
+    const linkedin = `https://www.linkedin.com/in/${first}${Math.floor(
+      Math.random() * (99 - 18 + 1) + 18
+    )}`;
 
-    users.push({
+    const user = await User.create({
       first,
       last,
-      github,
-      assignments,
+      username: github,
+      email: `${github}@gmail.com`,
+      linkedin,
     });
+
+    users.push(user);
+
+    const thought = await Thought.create({
+      thoughtText: `Thought ${i + 1}`,
+      username: user.username,
+    });
+
+    thoughts.push(thought);
   }
 
-  // Add users to the collection and await the results
-  await User.collection.insertMany(users);
+  // Add reactions to some of the thoughts
+  for (let i = 0; i < thoughts.length; i++) {
+    for (let j = 0; j < 5; j++) {
+      const user = users[Math.floor(Math.random() * users.length)];
+      await Reaction.create({
+        reactionBody: `Reaction ${j + 1}`,
+        username: user.username,
+        thoughtId: thoughts[i]._id,
+      });
+    }
+  }
 
-  // Add thoughts to the collection and await the results
-  await Thought.collection.insertOne({
-    thoughtName: "UCLA",
-    inPerson: false,
-    users: [...users],
-  });
-
-  // Log out the seed data to indicate what should appear in the database
-  console.table(users);
   console.info("Seeding complete! 🌱");
   process.exit(0);
 });

@@ -1,29 +1,23 @@
+// userRoutes.js
 const router = require("express").Router();
 const {
-  getUsers,
-  getSingleUser,
   createUser,
+  getUsers,
+  updateUser,
   deleteUser,
-  addThought,
-  removeThought,
+  getSingleUser,
 } = require("../../controllers/userController");
+
+// Import thoughtRoutes
+const thoughtRoutes = require("./thoughtRoutes");
 
 // /api/users
 router.route("/").get(getUsers).post(createUser);
 
 // /api/users/:userId
-router.route("/:userId").get(getSingleUser).delete(deleteUser);
+router.route("/:userId").get(getSingleUser).put(updateUser).delete(deleteUser);
 
-// /api/users/:userId/thoughts
-router.route("/:userId/thoughts").post(addThought);
-
-// /api/users/:userId/thoughts/:thoughtId
-router.route("/:userId/thoughts/:thoughtId").delete(removeThought);
-
-// /api/users/:userId/friends/:friendId
-router.route("/:userId/friends/:friendId").post(addFriend);
-
-// /api/users/:userId/friends/:friendId
-router.route("/:userId/friends/:friendId").delete(deleteFriend);
+// Include the thought routes
+router.use("/:userId", thoughtRoutes);
 
 module.exports = router;
