@@ -1,4 +1,4 @@
-const { User, Thought } = require("../models");
+const { User, Thought, Reaction } = require("../models");
 
 // Get all thoughts
 const getThoughts = async (req, res) => {

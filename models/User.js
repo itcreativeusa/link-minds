@@ -18,7 +18,12 @@ const userSchema = new Schema(
       maxlength: 50,
       match: /.+\@.+\..+/,
     },
-    thoughts: [thoughtSchema],
+    thoughts: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Thought",
+      },
+    ],
     friends: [
       {
         type: Schema.Types.ObjectId,
@@ -26,11 +31,11 @@ const userSchema = new Schema(
       },
     ],
     linkedin: {
-      type: String, // Modify this based on your requirements
+      type: String,
       trim: true,
     },
     github: {
-      type: String, // Modify this based on your requirements
+      type: String,
       trim: true,
     },
   },
