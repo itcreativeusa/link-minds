@@ -17,7 +17,7 @@ router.route("/").get(getUsers).post(createUser);
 // /api/users/:userId
 router.route("/:userId").get(getSingleUser).put(updateUser).delete(deleteUser);
 
-// Include the thought routes
-router.use("/:userId", thoughtRoutes);
+// Include the thought routes under /api/users/:userId/thoughts
+router.use("/:userId/thoughts", thoughtRoutes);
 
 module.exports = router;

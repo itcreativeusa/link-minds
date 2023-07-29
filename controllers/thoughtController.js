@@ -1,9 +1,9 @@
-const { User, Thought, Reaction } = require("../models");
+const { User, Thought } = require("../models");
 
 // Get all thoughts
 const getThoughts = async (req, res) => {
   try {
-    const thoughts = await Thought.find();
+    const thoughts = await Thought.find().populate("reactions");
     res.json(thoughts);
   } catch (err) {
     console.log(err);
@@ -16,7 +16,7 @@ const getSingleThought = async (req, res) => {
   const { thoughtId } = req.params;
 
   try {
-    const thought = await Thought.findById(thoughtId);
+    const thought = await Thought.findById(thoughtId).populate("reactions");
 
     if (!thought) {
       return res.status(404).json({ message: "Thought not found" });
@@ -31,11 +31,10 @@ const getSingleThought = async (req, res) => {
 
 // Create a new thought and add it to a user's thoughts array
 const createThought = async (req, res) => {
-  const { userId } = req.params;
   const { thoughtText, username } = req.body;
 
   try {
-    const user = await User.findById(userId);
+    const user = await User.findOne({ username: username });
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -85,63 +84,12 @@ const deleteThought = async (req, res) => {
       return res.status(404).json({ message: "Thought not found" });
     }
 
-    // Remove the thought from the user's thoughts array
-    const user = await User.findById(thought.userId);
-    if (user) {
-      user.thoughts.pull(thought._id);
-      await user.save();
-    }
-
-    res.json(thought);
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json(err);
-  }
-};
-
-// Add a reaction to a thought
-const addReaction = async (req, res) => {
-  const { thoughtId } = req.params;
-  const { reactionBody, username } = req.body;
-
-  try {
-    const thought = await Thought.findById(thoughtId);
-
-    if (!thought) {
-      return res.status(404).json({ message: "Thought not found" });
-    }
-
-    thought.reactions.push({ reactionBody, username });
-    await thought.save();
-
-    res.json(thought);
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json(err);
-  }
-};
-
-// Remove a reaction from a thought
-const removeReaction = async (req, res) => {
-  const { thoughtId, reactionId } = req.params;
-
-  try {
-    const thought = await Thought.findById(thoughtId);
-
-    if (!thought) {
-      return res.status(404).json({ message: "Thought not found" });
-    }
-
-    const reaction = thought.reactions.find(
-      (reaction) => reaction._id.toString() === reactionId
+    // Remove the thought from all users' thoughts array
+    const users = await User.updateMany(
+      {},
+      { $pull: { thoughts: thought._id } },
+      { new: true }
     );
-
-    if (!reaction) {
-      return res.status(404).json({ message: "Reaction not found" });
-    }
-
-    thought.reactions.pull(reaction._id);
-    await thought.save();
 
     res.json(thought);
   } catch (err) {
@@ -156,6 +104,4 @@ module.exports = {
   createThought,
   updateThought,
   deleteThought,
-  addReaction,
-  removeReaction,
 };

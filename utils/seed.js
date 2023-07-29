@@ -7,10 +7,9 @@ connection.on("error", (err) => err);
 connection.once("open", async () => {
   console.log("connected");
   try {
-    // Drop existing thoughts, users, and reactions
+    // Drop existing thoughts and users
     await Thought.deleteMany({});
     await User.deleteMany({});
-    await Reaction.deleteMany({});
 
     // Create empty array to hold the users and thoughts
     const users = [];
@@ -50,10 +49,15 @@ connection.once("open", async () => {
     for (let i = 0; i < thoughts.length; i++) {
       for (let j = 0; j < 5; j++) {
         const user = users[Math.floor(Math.random() * users.length)];
-        await Reaction.create({
-          reactionBody: `Reaction ${j + 1}`,
-          username: user.username,
-          thoughtId: thoughts[i]._id,
+
+        // update Thought with reactions
+        await Thought.findByIdAndUpdate(thoughts[i]._id, {
+          $push: {
+            reactions: {
+              reactionBody: `Reaction ${j + 1}`,
+              username: user.username,
+            },
+          },
         });
       }
     }
