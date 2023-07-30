@@ -44,6 +44,7 @@ const createThought = async (req, res) => {
     }
 
     const thought = await Thought.create({ thoughtText, username });
+    console.log("Created thought:", thought);
     user.thoughts.push(thought);
     await user.save();
 
