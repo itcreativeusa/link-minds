@@ -7,24 +7,9 @@ const headCount = async () =>
     .count("userCount")
     .then((numberOfUsers) => numberOfUsers);
 
-// Aggregate function for getting the overall grade using $avg
-const grade = async (userId) =>
-  User.aggregate([
-    // only include the given user by using $match
-    { $match: { _id: ObjectId(userId) } },
-    {
-      $unwind: "$thoughts",
-    },
-    {
-      $group: {
-        _id: ObjectId(userId),
-        overallGrade: { $avg: "$thoughts.score" },
-      },
-    },
-  ]);
-
 // Get all users
 const getUsers = (req, res) => {
+  console.log("Get all users");
   User.find()
     .populate("thoughts")
     .populate("friends")
@@ -43,6 +28,7 @@ const getUsers = (req, res) => {
 
 // Get a single user
 const getSingleUser = (req, res) => {
+  console.log("Get a single user");
   User.findOne({ _id: req.params.userId })
     .select("-__v")
     .populate("thoughts")
@@ -52,7 +38,6 @@ const getSingleUser = (req, res) => {
         ? res.status(404).json({ message: "No user with that ID" })
         : res.json({
             user,
-            grade: await grade(req.params.userId),
           })
     )
     .catch((err) => {
@@ -63,6 +48,7 @@ const getSingleUser = (req, res) => {
 
 // create a new user
 const createUser = async (req, res) => {
+  console.log("Create a new user");
   const { username, email } = req.body;
 
   // Check if username and email are provided in the request body
@@ -72,7 +58,7 @@ const createUser = async (req, res) => {
 
   try {
     const user = await User.create({ username, email }); // Pass only the required fields
-    res.json(user);
+    res.json({ message: "User added successfully!" }, user);
   } catch (err) {
     console.log(err);
     return res.status(500).json(err);
@@ -81,6 +67,7 @@ const createUser = async (req, res) => {
 
 // Update a user
 const updateUser = (req, res) => {
+  console.log("Update a user");
   User.findOneAndUpdate(
     { _id: req.params.userId },
     { $set: req.body },
@@ -89,13 +76,14 @@ const updateUser = (req, res) => {
     .then((user) =>
       !user
         ? res.status(404).json({ message: "No user found with that ID :(" })
-        : res.json(user)
+        : res.json({ message: "User updated successfully!" }, user)
     )
     .catch((err) => res.status(500).json(err));
 };
 
 // Delete a user and remove related thoughts
 const deleteUser = (req, res) => {
+  console.log("Delete a user");
   User.findOneAndRemove({ _id: req.params.userId })
     .then((user) => {
       if (!user) {
@@ -103,9 +91,12 @@ const deleteUser = (req, res) => {
       } else {
         // Remove the associated thoughts
         return Thought.deleteMany({ userId: user._id }).then(() =>
-          res.json({
-            message: "User and associated thoughts successfully deleted",
-          })
+          res.json(
+            {
+              message: "User and associated thoughts successfully deleted",
+            },
+            user
+          )
         );
       }
     })
@@ -117,7 +108,7 @@ const deleteUser = (req, res) => {
 
 // Add an thought to a user
 const addThought = (req, res) => {
-  console.log("You are adding an thought");
+  console.log("Add a thought");
   console.log(req.body);
   const thoughtData = req.body;
 
@@ -132,13 +123,14 @@ const addThought = (req, res) => {
     .then((user) =>
       !user
         ? res.status(404).json({ message: "No user found with that ID :(" })
-        : res.json(user)
+        : res.json({ message: "Thought created successfully!" }, user)
     )
     .catch((err) => res.status(500).json(err));
 };
 
 // Remove thought from a user
 const removeThought = (req, res) => {
+  console.log("Remove a thought");
   User.findOneAndUpdate(
     { _id: req.params.userId },
     { $pull: { thoughts: ObjectId(req.params.thoughtId) } },
@@ -147,13 +139,14 @@ const removeThought = (req, res) => {
     .then((user) =>
       !user
         ? res.status(404).json({ message: "No user found with that ID :(" })
-        : res.json(user)
+        : res.json({ message: "Thought removed successfully!" }, user)
     )
     .catch((err) => res.status(500).json(err));
 };
 
 // Add a friend to a user
 const addFriend = (req, res) => {
+  console.log("Add a friend");
   User.findOneAndUpdate(
     { _id: req.params.userId },
     { $addToSet: { friends: req.params.friendId } },
@@ -164,13 +157,15 @@ const addFriend = (req, res) => {
         res.status(404).json({ message: "No user found with this id!" });
         return;
       }
-      res.json(dbUserData);
+      // Friend added successfully
+      res.json({ message: "Friend added successfully!" }, dbUserData);
     })
     .catch((err) => res.json(err));
 };
 
 // Remove a friend from a user
 const deleteFriend = (req, res) => {
+  console.log("Delete a friend");
   User.findOneAndUpdate(
     { _id: req.params.userId },
     { $pull: { friends: req.params.friendId } },
@@ -181,7 +176,8 @@ const deleteFriend = (req, res) => {
         res.status(404).json({ message: "No user found with this id!" });
         return;
       }
-      res.json(dbUserData);
+      // Friend deleted successfully
+      res.json({ message: "Friend deleted successfully!" });
     })
     .catch((err) => res.json(err));
 };

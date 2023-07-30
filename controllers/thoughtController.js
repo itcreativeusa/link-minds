@@ -2,6 +2,7 @@ const { User, Thought } = require("../models");
 
 // Get all thoughts
 const getThoughts = async (req, res) => {
+  console.log("Get all thoughts");
   try {
     const thoughts = await Thought.find().populate("reactions");
     res.json(thoughts);
@@ -13,6 +14,7 @@ const getThoughts = async (req, res) => {
 
 // Get a single thought by thoughtId
 const getSingleThought = async (req, res) => {
+  console.log("Get a single thought");
   const { thoughtId } = req.params;
 
   try {
@@ -31,6 +33,7 @@ const getSingleThought = async (req, res) => {
 
 // Create a new thought and add it to a user's thoughts array
 const createThought = async (req, res) => {
+  console.log("Create a new thought");
   const { thoughtText, username } = req.body;
 
   try {
@@ -51,57 +54,8 @@ const createThought = async (req, res) => {
   }
 };
 
-// Update a thought by thoughtId
-const updateThought = async (req, res) => {
-  const { thoughtId } = req.params;
-  const { thoughtText } = req.body;
-
-  try {
-    const thought = await Thought.findById(thoughtId);
-
-    if (!thought) {
-      return res.status(404).json({ message: "Thought not found" });
-    }
-
-    thought.thoughtText = thoughtText;
-    await thought.save();
-
-    res.json(thought);
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json(err);
-  }
-};
-
-// Delete a thought by thoughtId
-const deleteThought = async (req, res) => {
-  const { thoughtId } = req.params;
-
-  try {
-    const thought = await Thought.findByIdAndDelete(thoughtId);
-
-    if (!thought) {
-      return res.status(404).json({ message: "Thought not found" });
-    }
-
-    // Remove the thought from all users' thoughts array
-    const users = await User.updateMany(
-      {},
-      { $pull: { thoughts: thought._id } },
-      { new: true }
-    );
-
-    res.json(thought);
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json(err);
-  }
-};
-
 module.exports = {
   getThoughts,
   getSingleThought,
   createThought,
-  updateThought,
-  deleteThought,
 };

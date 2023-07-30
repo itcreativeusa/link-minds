@@ -9,7 +9,7 @@ const ReactionSchema = new mongoose.Schema({
   reactionBody: {
     type: String,
     required: true,
-    maxlength: [280, "Reaction must be less than 280 characters."],
+    maxlength: 280,
   },
   username: {
     type: String,
@@ -26,7 +26,7 @@ const ThoughtSchema = new mongoose.Schema({
   thoughtText: {
     type: String,
     required: true,
-    maxlength: [280, "Thought must be less than 280 characters."],
+    maxlength: 280,
   },
   createdAt: {
     type: Date,

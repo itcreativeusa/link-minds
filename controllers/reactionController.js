@@ -2,6 +2,7 @@ const { Thought } = require("../models");
 
 // Add a reaction to a thought
 const addReaction = async (req, res) => {
+  console.log("Add a reaction");
   const { thoughtId } = req.params;
   const { reactionBody, username } = req.body;
 
@@ -14,8 +15,8 @@ const addReaction = async (req, res) => {
 
     thought.reactions.push({ reactionBody, username });
     await thought.save();
-
-    res.json(thought);
+    //Reaction added successfully
+    res.json({ message: "Reaction added successfully!", thought });
   } catch (err) {
     console.log(err);
     return res.status(500).json(err);
@@ -24,6 +25,7 @@ const addReaction = async (req, res) => {
 
 // Remove a reaction from a thought
 const removeReaction = async (req, res) => {
+  console.log("Remove a reaction");
   const { thoughtId, reactionId } = req.params;
 
   try {
@@ -44,7 +46,8 @@ const removeReaction = async (req, res) => {
     thought.reactions.pull(reaction._id);
     await thought.save();
 
-    res.json(thought);
+    // Reaction removed successfully
+    res.json({ message: "Reaction removed successfully!", thought });
   } catch (err) {
     console.log(err);
     return res.status(500).json(err);
