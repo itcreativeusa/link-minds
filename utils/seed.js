@@ -38,7 +38,7 @@ connection.once("open", async () => {
       users.push(user);
 
       const thought = await Thought.create({
-        thoughtText: `Thought ${i + 1}`,
+        thoughtText: `Life is beautiful ${i + 1}`,
         username: user.username,
       });
 
@@ -54,7 +54,7 @@ connection.once("open", async () => {
         await Thought.findByIdAndUpdate(thoughts[i]._id, {
           $push: {
             reactions: {
-              reactionBody: `Reaction ${j + 1}`,
+              reactionBody: `Great words, i agree! ${j + 1}`,
               username: user.username,
             },
           },
