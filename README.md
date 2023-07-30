@@ -13,6 +13,7 @@ This is a link-minds an API for a social network web application where users can
 
 - [Installation](#installation)
 - [Usage](#usage)
+- [Screenshots](#screenshots)
 - [Requirements](#requirements)
 - [Credits](#credits)
 - [License](#license)
@@ -33,6 +34,8 @@ Use MongoDB Compass to manage created database.
 Run `npm start` to start the server.
 Upon initiating the server, the Mongoose models are synced to the MongoDB database.
 Open Insomnia application to test API POST, PUT, and DELETE routes.
+
+## Screenshots
 
 Screenshot located in `./img/` folder
 
