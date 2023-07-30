@@ -36,10 +36,10 @@ Open Insomnia application to test API POST, PUT, and DELETE routes.
 
 Screenshot located in `./img/` folder
 
-![create user](img/Screenshot-1.png)
-![all users](img/Screenshot-2.png)
-![add reaction](img/Screenshot-3.png)
-![create thought](img/Screenshot-4.png)
+![Create user](img/Screenshot-1.png)
+![All users](img/Screenshot-2.png)
+![Add reaction](img/Screenshot-3.png)
+![Create thought](img/Screenshot-4.png)
 
 ## Credits
 
