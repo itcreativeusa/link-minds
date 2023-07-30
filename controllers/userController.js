@@ -51,7 +51,7 @@ const createUser = async (req, res) => {
 
   try {
     const user = await User.create({ username, email }); // Pass only the required fields
-    res.json({ message: "User added successfully!" }, user);
+    res.status(201).json({ message: "User added successfully!", user });
   } catch (err) {
     console.log(err);
     return res.status(500).json(err);
@@ -69,7 +69,7 @@ const updateUser = (req, res) => {
     .then((user) =>
       !user
         ? res.status(404).json({ message: "No user found with that ID :(" })
-        : res.json({ message: "User updated successfully!" }, user)
+        : res.json({ message: "User updated successfully!", user })
     )
     .catch((err) => res.status(500).json(err));
 };
@@ -84,12 +84,10 @@ const deleteUser = (req, res) => {
       } else {
         // Remove the associated thoughts
         return Thought.deleteMany({ userId: user._id }).then(() =>
-          res.json(
-            {
-              message: "User and associated thoughts successfully deleted",
-            },
-            user
-          )
+          res.json({
+            message: "User and associated thoughts successfully deleted",
+            user, // Move the user object inside the response data
+          })
         );
       }
     })
@@ -116,7 +114,7 @@ const addThought = (req, res) => {
     .then((user) =>
       !user
         ? res.status(404).json({ message: "No user found with that ID :(" })
-        : res.json({ message: "Thought created successfully!" }, user)
+        : res.json({ message: "Thought created successfully!", user })
     )
     .catch((err) => res.status(500).json(err));
 };
@@ -132,7 +130,7 @@ const removeThought = (req, res) => {
     .then((user) =>
       !user
         ? res.status(404).json({ message: "No user found with that ID :(" })
-        : res.json({ message: "Thought removed successfully!" }, user)
+        : res.json({ message: "Thought removed successfully!", user })
     )
     .catch((err) => res.status(500).json(err));
 };
@@ -151,7 +149,7 @@ const addFriend = (req, res) => {
         return;
       }
       // Friend added successfully
-      res.json({ message: "Friend added successfully!" }, dbUserData);
+      res.json({ message: "Friend added successfully!", user: dbUserData });
     })
     .catch((err) => res.json(err));
 };
