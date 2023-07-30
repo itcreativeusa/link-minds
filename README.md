@@ -34,9 +34,12 @@ Run `npm start` to start the server.
 Upon initiating the server, the Mongoose models are synced to the MongoDB database.
 Open Insomnia application to test API POST, PUT, and DELETE routes.
 
-Screenshot located in `./assets/` folder
+Screenshot located in `./img/` folder
 
-![link-minds](Assets/screenshot.png)
+![create user](img/Screenshot-1.png)
+![all users](img/Screenshot-2.png)
+![add reaction](img/Screenshot-3.png)
+![create thought](img/Screenshot-4.png)
 
 ## Credits
 
