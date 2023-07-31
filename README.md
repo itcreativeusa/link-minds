@@ -48,6 +48,10 @@ Screenshot located in `./img/` folder
 
 Some code for this project was taken from Mini-Project provided by Berkeley Bootcamp for studying purposes.
 
+Used Stack Overflow entries:
+How to delete multiple ids in mongoose
+https://stackoverflow.com/questions/57105883/how-to-delete-multiple-ids-in-mongoose
+
 ## License
 
 Please refer to the LICENSE in the repo.

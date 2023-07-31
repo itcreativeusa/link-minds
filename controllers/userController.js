@@ -83,7 +83,7 @@ const deleteUser = (req, res) => {
         return res.status(404).json({ message: "No such user exists" });
       } else {
         // Remove the associated thoughts
-        return Thought.deleteMany({ userId: user._id }).then(() =>
+        return Thought.deleteMany({ _id: { $in: user.thoughts } }).then(() =>
           res.json({
             message: "User and associated thoughts successfully deleted",
             user, // Move the user object inside the response data
