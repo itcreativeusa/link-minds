@@ -6,6 +6,7 @@ Deployed application link on GitHub
 https://github.com/itcreativeusa/link-minds
 
 Youtube video guide
+https://youtu.be/FQ1cgrTaQDYg
 
 This is a link-minds an API for a social network web application where users can share their thoughts, react to friends’ thoughts, and create a friend list. App use Express.js for routing, a MongoDB database, and the Mongoose ODM.
 
